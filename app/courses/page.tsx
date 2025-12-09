@@ -4,6 +4,20 @@ import { MobileNav } from '@/components/navigation/mobile-nav'
 import { CourseFilters } from '@/components/courses/course-filters'
 import { CourseCard } from '@/components/courses/course-card'
 
+interface Course {
+  id: string
+  title: string
+  slug: string
+  description: string
+  price: number
+  currency: string
+  thumbnail_url: string
+  video_preview_url?: string | null
+  category: string
+  level: string
+  duration_minutes: number
+}
+
 export default async function CoursesPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -124,7 +138,7 @@ export default async function CoursesPage() {
               </div>
 
               <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {courses.map((course) => (
+                {courses.map((course: Course) => (
                   <CourseCard key={course.id} course={course} />
                 ))}
               </div>
