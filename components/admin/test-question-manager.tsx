@@ -46,7 +46,7 @@ export function TestQuestionManager({ testId, courseId }: TestQuestionManagerPro
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null)
   const [questionType, setQuestionType] = useState<'multiple_choice' | 'true_false' | 'short_answer'>('multiple_choice')
-  const [options, setOptions] = useState<string[]>(['', ''])
+  const [formOptions, setFormOptions] = useState<string[]>(['', ''])
   const supabase = createClient()
 
   useEffect(() => {
@@ -97,17 +97,17 @@ export function TestQuestionManager({ testId, courseId }: TestQuestionManagerPro
   }
 
   const addOption = () => {
-    setOptions([...options, ''])
+    setFormOptions([...formOptions, ''])
   }
 
   const removeOption = (index: number) => {
-    setOptions(options.filter((_, i) => i !== index))
+    setFormOptions(formOptions.filter((_, i) => i !== index))
   }
 
   const updateOption = (index: number, value: string) => {
-    const newOptions = [...options]
+    const newOptions = [...formOptions]
     newOptions[index] = value
-    setOptions(newOptions)
+    setFormOptions(newOptions)
   }
 
   const handleCreateQuestion = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -140,7 +140,7 @@ export function TestQuestionManager({ testId, courseId }: TestQuestionManagerPro
     // Handle options for multiple choice/true-false
     if (questionType === 'multiple_choice' || questionType === 'true_false') {
       const correctOptionIndex = parseInt(formData.get('correct_option') as string)
-      const filteredOptions = options.filter(opt => opt.trim() !== '')
+      const filteredOptions = formOptions.filter(opt => opt.trim() !== '')
 
       if (filteredOptions.length === 0) {
         alert('Please add at least one option')
@@ -182,7 +182,7 @@ export function TestQuestionManager({ testId, courseId }: TestQuestionManagerPro
 
     setShowCreateDialog(false)
     setQuestionType('multiple_choice')
-    setOptions(['', ''])
+    setFormOptions(['', ''])
     fetchQuestions()
   }
 
@@ -238,9 +238,9 @@ export function TestQuestionManager({ testId, courseId }: TestQuestionManagerPro
                     onChange={(e) => {
                       setQuestionType(e.target.value as 'multiple_choice' | 'true_false' | 'short_answer')
                       if (e.target.value === 'true_false') {
-                        setOptions(['True', 'False'])
+                        setFormOptions(['True', 'False'])
                       } else if (e.target.value === 'multiple_choice') {
-                        setOptions(['', ''])
+                        setFormOptions(['', ''])
                       }
                     }}
                   >
@@ -259,7 +259,7 @@ export function TestQuestionManager({ testId, courseId }: TestQuestionManagerPro
               {questionType === 'multiple_choice' && (
                 <div className="space-y-4">
                   <label className="text-sm font-medium block">Options</label>
-                  {options.map((option, index) => (
+                  {formOptions.map((option, index) => (
                     <div key={index} className="flex gap-2 items-center">
                       <Input
                         value={option}
@@ -277,7 +277,7 @@ export function TestQuestionManager({ testId, courseId }: TestQuestionManagerPro
                         />
                         Correct
                       </label>
-                      {options.length > 2 && (
+                      {formOptions.length > 2 && (
                         <Button
                           type="button"
                           variant="ghost"
