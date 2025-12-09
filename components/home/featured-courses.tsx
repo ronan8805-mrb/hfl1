@@ -1,6 +1,20 @@
 import { CourseCard } from '@/components/courses/course-card'
 import { createClient } from '@/lib/supabase/server'
 
+interface Course {
+  id: string
+  title: string
+  slug: string
+  description: string
+  price: number
+  currency: string
+  thumbnail_url: string
+  video_preview_url?: string | null
+  category: string
+  level: string
+  duration_minutes: number
+}
+
 export async function FeaturedCourses() {
   const supabase = await createClient()
   
@@ -72,7 +86,7 @@ export async function FeaturedCourses() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {featuredCourses.map((course) => (
+          {featuredCourses.map((course: Course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>
