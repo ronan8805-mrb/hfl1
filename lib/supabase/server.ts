@@ -7,15 +7,25 @@ export async function createClient() {
 
   if (!url || !key) {
     // Return a mock client during build if env vars are missing
+    const createMockQuery = () => {
+      const mockQuery: any = {
+        eq: () => mockQuery,
+        order: () => Promise.resolve({ data: [], error: null }),
+        limit: () => Promise.resolve({ data: [], error: null }),
+        single: async () => ({ data: null, error: null }),
+      }
+      return mockQuery
+    }
+    
     return {
       auth: {
         getUser: async () => ({ data: { user: null }, error: null }),
       },
       from: () => ({
-        select: () => ({ eq: () => ({ single: async () => ({ data: null, error: null }) }) }),
+        select: () => createMockQuery(),
         insert: () => ({ data: null, error: null }),
-        update: () => ({ eq: () => ({ data: null, error: null }) }),
-        delete: () => ({ eq: () => ({ data: null, error: null }) }),
+        update: () => createMockQuery(),
+        delete: () => createMockQuery(),
       }),
     } as any
   }
