@@ -11,7 +11,7 @@ export async function createClient() {
       const result = Promise.resolve({ data: [], error: null })
       const mockQuery: any = {
         eq: () => mockQuery,
-        order: () => result,
+        order: () => mockQuery,
         limit: () => result,
         single: async () => ({ data: null, error: null }),
       }
