@@ -8,12 +8,18 @@ export async function createClient() {
   if (!url || !key) {
     // Return a mock client during build if env vars are missing
     const createMockQuery = () => {
+      const result = Promise.resolve({ data: [], error: null })
       const mockQuery: any = {
         eq: () => mockQuery,
-        order: () => Promise.resolve({ data: [], error: null }),
-        limit: () => Promise.resolve({ data: [], error: null }),
+        order: () => result,
+        limit: () => result,
         single: async () => ({ data: null, error: null }),
       }
+      // Make the query builder thenable
+      Object.setPrototypeOf(mockQuery, Promise.prototype)
+      mockQuery.then = result.then.bind(result)
+      mockQuery.catch = result.catch.bind(result)
+      mockQuery.finally = result.finally.bind(result)
       return mockQuery
     }
     
